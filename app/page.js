@@ -1,95 +1,158 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Link from "next/link";
+
+import {
+  Box,
+  Container,
+  Flex,
+  Heading,
+  Hide,
+  Stack,
+  AvatarGroup,
+  Avatar,
+  Text,
+  Center,
+  Wrap,
+  WrapItem,
+} from '@chakra-ui/react';
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <Box minHeight="100vh" bgColor="#151515" color="#FCF6EE">
+      <Container maxW="1200px">
+        <Box py="1.5rem" mb="3rem">
+          <Flex
+            justifyContent="space-between"
+            alignItems="center"
+            gap="2"
+            px="0.75rem"
+            py="0.5rem"
+            bgColor="#232020"
+            borderRadius="2xl"
+          >
+            <Box p="2">
+              <Heading as="h1" fontSize="1.75rem" letterSpacing="0.05em">
+                <Link href="/">Linkspace</Link>
+              </Heading>
+            </Box>
+            <Hide below="md">
+              <Wrap spacing="1.5rem">
+                <WrapItem>
+                  <Link href="/">精選帳號</Link>
+                </WrapItem>
+                <WrapItem>
+                  <Link href="/">關於我們</Link>
+                </WrapItem>
+              </Wrap>
+            </Hide>
+            <Flex gap="2">
+              <Box
+                py="0.5rem"
+                bgColor="#34312D"
+                color="inherit"
+                borderRadius="lg"
+                _hover={{
+                  bg: '#34312D',
+                }}
+                sx={{
+                  '& a': {
+                    padding: '1rem',
+                  },
+                }}
+              >
+                <Link href="/signup">註冊</Link>
+              </Box>
+              <Box
+                py="0.5rem"
+                bgGradient="linear(to-br, #e6d9ca, #efe5dc, #ffffff)"
+                color="#151515"
+                borderRadius="lg"
+                _hover={{
+                  bg: '#fff',
+                }}
+                sx={{
+                  '& a': {
+                    padding: '1rem',
+                  },
+                }}
+              >
+                <Link href="/login">登入</Link>
+              </Box>
+            </Flex>
+          </Flex>
+        </Box>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        <Center>
+          <Stack spacing="2rem" alignItems="center">
+            <Flex
+              p="0.5rem"
+              border="1px"
+              borderColor="#2b2b2b"
+              borderRadius="9999px"
+              alignItems="center"
+              gap="0.5rem"
+            >
+              <AvatarGroup size="sm" max={5}>
+                <Avatar
+                  borderColor="transparent"
+                  name="Ryan Florence"
+                  src="https://bit.ly/ryan-florence"
+                />
+                <Avatar
+                  borderColor="transparent"
+                  name="Kent Dodds"
+                  src="https://bit.ly/kent-c-dodds"
+                />
+                <Avatar
+                  borderColor="transparent"
+                  name="Christian Nwamba"
+                  src="https://bit.ly/code-beast"
+                />
+              </AvatarGroup>
+              <Text fontSize="sm">35,000+ 人都在使用</Text>
+            </Flex>
+
+            <Heading
+              fontSize={{
+                base: '3rem',
+                md: '5rem',
+              }}
+              textAlign="center"
+            >
+              打造屬於你的
+              <br />
+              社群連結任意門
+            </Heading>
+
+            <Box textAlign="center">
+              <Text>社群連結很多，分享時很麻煩嗎？</Text>
+              <Text>
+                快來使用 Linkspace
+                一頁式網站滿足所有願望，透過拖拉方式即可快速完成
+              </Text>
+            </Box>
+
+            <Box
+              py="1rem"
+              bgGradient="linear(to-br, #e6d9ca, #efe5dc, #ffffff)"
+              color="#151515"
+              borderRadius="2xl"
+              fontSize="xl"
+              fontWeight="bold"
+              _hover={{
+                bg: '#fff',
+              }}
+              sx={{
+                '& a': {
+                  padding: '2rem',
+                },
+              }}
+            >
+              <Link href="/login">立即使用</Link>
+            </Box>
+          </Stack>
+        </Center>
+      </Container>
+    </Box>
   );
 }
+
