@@ -1,25 +1,50 @@
+import Image from 'next/image';
 import Link from "next/link";
 
 import {
+  Avatar,
+  AvatarGroup,
   Box,
+  Card,
+  CardBody,
+  CardHeader,
+  Center,
   Container,
   Flex,
   Heading,
   Hide,
+  SimpleGrid,
   Stack,
-  AvatarGroup,
-  Avatar,
   Text,
-  Center,
   Wrap,
-  WrapItem,
+  WrapItem
 } from '@chakra-ui/react';
+
+import AllInOnePlace from '../assets/images/home-1.png';
+
+const testimonials = [
+  {
+    avatar: 'https://bit.ly/kent-c-dodds',
+    content:
+      '實際使用下來覺得回不去了，連結多了圖像更加豐富，增加消費者點選欲望、一目了然。',
+  },
+  {
+    avatar: 'https://bit.ly/dan-abramov',
+    content:
+      '超好用的連結工具！頁面美編自由度很高🧡操作容易，簡單把你的網址變精緻！',
+  },
+  {
+    avatar: 'https://bit.ly/ryan-florence',
+    content:
+      '如果是個人創作者沒有資源建立官方網頁，這是不錯的選擇，透過更細節的介紹呈現特色商品、傳遞品牌理念。',
+  },
+];
 
 export default function Home() {
   return (
     <Box minHeight="100vh" bgColor="#151515" color="#FCF6EE">
       <Container maxW="1200px">
-        <Box py="1.5rem" mb="3rem">
+        <Box as="header" py="1.5rem">
           <Flex
             justifyContent="space-between"
             alignItems="center"
@@ -81,7 +106,7 @@ export default function Home() {
           </Flex>
         </Box>
 
-        <Center>
+        <Center as="section" pt="3rem" pb="10rem">
           <Stack spacing="2rem" alignItems="center">
             <Flex
               p="0.5rem"
@@ -136,6 +161,7 @@ export default function Home() {
               bgGradient="linear(to-br, #e6d9ca, #efe5dc, #ffffff)"
               color="#151515"
               borderRadius="2xl"
+              boxShadow="0px 3px 10px #e6d9ca"
               fontSize="xl"
               fontWeight="bold"
               _hover={{
@@ -151,8 +177,105 @@ export default function Home() {
             </Box>
           </Stack>
         </Center>
+
+        <Flex
+          as="section"
+          justifyContent="center"
+          alignItems="center"
+          mb="3rem"
+        >
+          <Box maxW="40%">
+            <Heading mb="1rem">一次整合所有連結</Heading>
+            <Text>
+              整合所有社群連結，連結你的 Instagram、YouTube、Threads 與 Tiktok。
+            </Text>
+            <Text>建立個人品牌、活動專頁達成導流與銷售等經營目標。</Text>
+          </Box>
+          <Image
+            maxW="50%"
+            src={AllInOnePlace}
+            boxSize="40%"
+            alt="all link in one place"
+          />
+        </Flex>
+
+        <Flex
+          as="section"
+          flexDirection="row-reverse"
+          justifyContent="center"
+          alignItems="center"
+          mb="3rem"
+        >
+          <Box maxW="40%">
+            <Heading mb="1rem">一次整合所有連結</Heading>
+            <Text>
+              整合所有社群連結，連結你的 Instagram、YouTube、Threads 與 Tiktok。
+            </Text>
+            <Text>建立個人品牌、活動專頁達成導流與銷售等經營目標。</Text>
+          </Box>
+          <Image
+            maxW="50%"
+            src={AllInOnePlace}
+            boxSize="40%"
+            alt="all link in one place"
+          />
+        </Flex>
+
+        <Center mb="4rem">
+          <Heading>使用者心得</Heading>
+        </Center>
+        <SimpleGrid columns={3} spacing={16}>
+          {testimonials.map((testimonial) => (
+            <Card
+              key={testimonial.avatar}
+              border="1px solid"
+              borderColor="#1f1f1f"
+              borderRadius="30px"
+              bgGradient="linear(180deg,#1e1e1e 0%,rgb(20,20,20) 100%)"
+              color="inherit"
+              py="3rem"
+            >
+              <CardHeader>
+                <Center>
+                  <Avatar size="xl" name="Dan Abrahmov" src={testimonial.avatar} />
+                </Center>
+              </CardHeader>
+              <CardBody maxW="80%" margin="auto">
+                <Text>{testimonial.content}</Text>
+              </CardBody>
+            </Card>
+          ))}
+        </SimpleGrid>
+      </Container>
+      <Container
+        as="footer"
+        maxW="100%"
+        px="5rem"
+        py="2rem"
+      >
+        <Flex justifyContent="space-between" alignItems="center">
+          <Heading opacity="0.5" userSelect="none">
+            Linkspace
+          </Heading>
+          <Text display="flex">
+            Made with love by&nbsp;
+            <Link target="_blank" href="https://github.com/jayredk">
+              <Text
+                as="span"
+                opacity="0.5"
+                transition="opacity .3s"
+                _hover={{
+                  opacity: 1,
+                }}
+              >
+                Jay
+              </Text>
+            </Link>
+          </Text>
+        </Flex>
       </Container>
     </Box>
   );
 }
+
 

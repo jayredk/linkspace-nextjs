@@ -1,0 +1,20 @@
+@keyframes wobble {
+  0% {
+    transform:translateZ(0)
+  }
+  15% {
+    transform:translate3d(-5%,0,0) rotate(-2.5deg)
+  }
+  30% {
+    transform:translate3d(4%,0,0) rotate(1.5deg)
+  }
+  45% {
+    transform:translate3d(-2.5%,0,0) rotate(-1.5deg)
+  }
+  60% {
+    transform:translate3d(1%,0,0) rotate(1deg)
+  }
+  75% {
+    transform:translateZ(0)
+  }
+}

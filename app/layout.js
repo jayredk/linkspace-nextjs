@@ -1,6 +1,7 @@
 'use client'
 
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
+import { useState, useEffect } from 'react'
 
 // const metadata = {
 //   title: "Create Next App",
@@ -18,12 +19,31 @@ const theme = extendTheme({
 });
 
 export default function RootLayout({ children }) {
+  const [isMockingReady, setIsMockingReady] = useState(false)
+
+  // useEffect(() => {
+  //   const enableMocking = async () => {
+  //     if (typeof window !== 'undefined') {
+  //       if (process.env.NODE_ENV === 'development') {
+  //         const { worker } = await import('../mocks/browser');
+  //         await worker.start({
+  //           onUnhandledRequest: 'bypass',
+  //         })
+  //       }
+  //     }
+  //   }
+  //   enableMocking().then(() => setIsMockingReady(true));
+    
+  // }, [])
+
   return (
     <html lang="zh-TW">
       <body>
+        {/* {isMockingReady && */}
         <ChakraProvider theme={theme}>
           {children}
         </ChakraProvider>
+        {/* } */}
       </body>
     </html>
   );
