@@ -242,7 +242,7 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
         <Box
           sx={{
             '.lty-playbtn': {
-              backgroundImage: "url('/play-btn.svg')",
+              backgroundImage: "url('/images/play-btn.svg')",
               backgroundSize: '1.25rem',
               backgroundRepeat: 'no-repeat',
               bgColor: themeColorsMap[themeColor],
