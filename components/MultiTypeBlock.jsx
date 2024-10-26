@@ -1,3 +1,7 @@
+'use client'
+
+import { useEffect } from 'react'
+
 import {
   AspectRatio,
   Box,
@@ -24,7 +28,16 @@ import {
   MdImage,
 } from 'react-icons/md';
 
+import 'lite-youtube-embed/src/lite-yt-embed.css';
+
+
 export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
+
+  useEffect(() => {
+    import('lite-youtube-embed')
+  }, [])
+
+  
   return (
     <Box w="100%" bgColor="transparent" borderRadius="md">
       {block.type === 'text-button' && (

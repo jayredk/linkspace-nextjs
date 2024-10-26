@@ -49,9 +49,6 @@ import { BsCopy } from 'react-icons/bs';
 
 import { FiExternalLink } from 'react-icons/fi';
 
-import 'lite-youtube-embed/src/lite-yt-embed.css';
-import 'lite-youtube-embed/src/lite-yt-embed.js';
-
 
 import {
   bgColorsMap
