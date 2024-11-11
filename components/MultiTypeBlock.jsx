@@ -30,6 +30,8 @@ import {
 
 import 'lite-youtube-embed/src/lite-yt-embed.css';
 
+import 'animate.css';
+import '../assets/styles/effect.css'
 
 export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
 
