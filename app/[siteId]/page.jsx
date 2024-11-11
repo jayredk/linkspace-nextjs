@@ -19,7 +19,7 @@ import { bgColorsMap } from '@/constants/utilityMaps';
 
 
 export default function User({ params }) {
-  const { userId } = params;
+  const { siteId } = params;
 
   const [profile, setProfile] = useState({});
   const [blocks, setBlocks] = useState([]);
@@ -30,7 +30,7 @@ export default function User({ params }) {
       setIsLoading(true);
       try {
         const userRef = collection(db, 'users');
-        const q = query(userRef, where('custom_url', '==', userId));
+        const q = query(userRef, where('slug', '==', siteId));
         const querySnapshot = await getDocs(q);
 
         if (!querySnapshot.empty) {
@@ -47,7 +47,7 @@ export default function User({ params }) {
     };
 
     loadUser();
-  }, [userId]);
+  }, [siteId]);
 
   if (!isLoading && Object.keys(profile).length === 0) return (
     <Heading>此頁面不存在</Heading>
