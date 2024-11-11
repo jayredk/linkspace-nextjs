@@ -243,15 +243,15 @@ export default function Signup() {
         </Flex>
       </Container>
       <Box display={{ base: 'none', md: 'block' }}
-        w="100%">
+        w="100%" position="relative">
         <Image
           style={{
-            height: '100%',
             objectFit:"cover",
             objectPosition:"center"
           }}
           src={bgAlicia}
           alt='bg-signup'
+          fill
         ></Image>
       </Box>
     </Flex>

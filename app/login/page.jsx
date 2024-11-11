@@ -29,7 +29,7 @@ import {
 
 import { FcGoogle } from 'react-icons/fc';
 
-import bgIG from '@/assets/images/bg-IU.webp'
+import bgIU from '@/assets/images/bg-IU.webp'
 
 export default function Login() {
   const router = useRouter();
@@ -163,15 +163,15 @@ export default function Login() {
         </Flex>
       </Container>
       <Box display={{ base: 'none', md: 'block' }}
-        w="100%">
+        w="100%" position="relative">
         <Image
           style={{
-            height: '100%',
             objectFit:"cover",
             objectPosition:"center"
           }}
-          src={bgIG}
+          src={bgIU}
           alt='bg-IU'
+          fill
         ></Image>
       </Box>
     </Flex>
