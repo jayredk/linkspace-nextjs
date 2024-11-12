@@ -27,13 +27,13 @@ import {
 
 import { FcGoogle } from 'react-icons/fc';
 
-import bgAlicia from '@/assets/images/bg-alicia.webp'
+import bgAlicia from '../../assets/images/bg-alicia.webp'
+import { useSetUser } from '@/stores/userStore';
 
-
-const DOMAIN_URL = 'https://linkspace.com/';
 
 export default function Signup() {
   const router = useRouter();
+  const setUser = useSetUser();
 
   const {
     handleSubmit,
@@ -55,17 +55,17 @@ export default function Signup() {
 
       const { user } = userCredential;
 
-      const custom_url = user.uid.substring(0, 8);
+      const slug = user.uid.substring(0, 8);
       const avatarSeed = crypto.randomUUID().substring(0, 5);
+      const username = mail.match(/^([a-zA-Z0-9._%+-]+)@/)[1];
 
       const defaultUserData = {
-        custom_url: custom_url,
+        slug,
         profile: {
           avatar: `https://api.dicebear.com/9.x/fun-emoji/svg?seed=${avatarSeed}`,
           email: user.email,
-          name: '新使用者',
+          name: username,
           description: '歡迎來到我的頁面！',
-          siteUrl: `${DOMAIN_URL}${custom_url}`,
           bgColor: 'black',
           textColor: 'white',
           themeColor: 'blue',
@@ -114,10 +114,20 @@ export default function Signup() {
       };
 
       await setDoc(doc(db, 'users', user.uid), defaultUserData);
+
+      setUser({
+        uid: user.uid,
+      });
       
-      router.push('/login');
+      router.push('/create-site-id');
     } catch (error) {
-      console.error(error);
+      if (
+        error?.message === 'Firebase: Error (auth/email-already-in-use).'
+      ) {
+        alert('此信箱已被註冊');
+      } else {
+        alert(error?.message);
+      }
     }
   };
 

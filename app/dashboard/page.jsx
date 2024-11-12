@@ -198,6 +198,7 @@ function SortableBlock({
 export default function Dashboard() {
   const [profile, setProfile] = useState({});
   const [blocks, setBlocks] = useState([]);
+  const [slug, setSlug] = useState('');
 
   const user = useUser();
   const setUser = useSetUser();
@@ -213,7 +214,7 @@ export default function Dashboard() {
         setIsUrlCopy(false);
       }, 2000);
     } catch (error) {
-      console.log('複製失敗');
+      alert('複製失敗');
     }
   };
 
@@ -234,17 +235,17 @@ export default function Dashboard() {
     const loadUser = async () => {
       try {
         const userData = await getUserInfo(user.uid);
+
         setProfile(userData.profile);
+        setSlug(userData.slug);
         setBlocks(userData.blocks);
       } catch (error) {
-        console.error(error);
+        alert(error);
       }
     };
 
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      console.log(currentUser);
-
       if (currentUser) {
         setUser({
           email: currentUser.email,
@@ -338,7 +339,7 @@ export default function Dashboard() {
                       isReadOnly
                       border="0"
                       size="lg"
-                      value={profile.siteUrl}
+                      value={`${process.env.NEXT_PUBLIC_DOMAIN_NAME}/${slug}`}
                     />
                     <Tooltip label="複製網址" borderRadius="1.5rem">
                       <IconButton
@@ -354,7 +355,7 @@ export default function Dashboard() {
                     </Tooltip>
                     <Tooltip label="開啟頁面" borderRadius="1.5rem">
                       <Link
-                        href={profile.siteUrl}
+                        href={`${process.env.NEXT_PUBLIC_DOMAIN_NAME}/${slug}`}
                         isExternal
                         aria-label="Go to the website"
                         colorScheme="teal"

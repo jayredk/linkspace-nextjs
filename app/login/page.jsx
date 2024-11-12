@@ -51,7 +51,6 @@ export default function Login() {
       );
 
       const { user } = userCredential;
-      console.log(user);
       
       setUser({
         email: user.email,
@@ -60,8 +59,8 @@ export default function Login() {
       
 
       router.push('/dashboard');
-    } catch (err) {
-      console.error(err.message);
+    } catch (error) {
+      alert(error.message);
     }
 
   };
