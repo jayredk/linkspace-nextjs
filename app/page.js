@@ -100,7 +100,7 @@ const highlightUsers = [
   },
   {
     avatar:
-      'https://firebasestorage.googleapis.com/v0/b/linkspace-c64be.appspot.com/o/avatar-images%2FblockStudio.gif?alt=media&token=5a4a60b9-852a-49af-a53d-1efbab397faa',
+      'https://firebasestorage.googleapis.com/v0/b/linkspace-c64be.appspot.com/o/avatar-images%2Fblockstudio.webp?alt=media&token=10f79308-3888-4d75-aa56-420e16586c1f',
     name: '版塊設計',
     link: 'https://linkspace-one.vercel.app/blockstudio',
   },
@@ -338,7 +338,7 @@ export default function Home() {
             {highlightUsers.map((user) => (
               <Box key={user.link} as="li" listStyleType="none">
                 <Link href={user.link} target="_blank">
-                  <Avatar src={user.avatar} size="2xl" mb="1rem"></Avatar>
+                  <Avatar src={user.avatar} ignoreFallback={true} size="2xl" mb="1rem"></Avatar>
                   <Heading as="h4" textAlign="center" fontSize="lg">
                     {user.name}
                   </Heading>
@@ -351,7 +351,7 @@ export default function Home() {
             {highlightUsers.map((user) => (
               <Box key={user.link} as="li" listStyleType="none">
                 <Link href={user.link} target="_blank">
-                  <Avatar src={user.avatar} size="2xl" mb="1rem"></Avatar>
+                  <Avatar src={user.avatar} ignoreFallback={true} size="2xl" mb="1rem"></Avatar>
                   <Heading as="h4" textAlign="center" fontSize="lg">
                     {user.name}
                   </Heading>
