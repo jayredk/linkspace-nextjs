@@ -9,6 +9,8 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 
 import { useSetUser } from '@/stores/userStore';
 
+import GoogleAuthButton from '@/components/GoogleAuthButton';
+
 import {
   AbsoluteCenter,
   Box,
@@ -27,9 +29,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-import { FcGoogle } from 'react-icons/fc';
-
-import bgIU from '@/assets/images/bg-IU.webp'
+import bgIU from '@/assets/images/bg-IU.webp';
 
 export default function Login() {
   const router = useRouter();
@@ -87,17 +87,9 @@ export default function Login() {
             >
               登入
             </Heading>
-            <Button
-              w="100%"
-              py="1.25rem"
-              bgColor="white"
-              border="1px"
-              borderColor="gray.300"
-              borderRadius="md"
-              leftIcon={<FcGoogle fontSize="1.5rem" />}
-            >
+            <GoogleAuthButton>
               透過 Google 帳號登入
-            </Button>
+            </GoogleAuthButton>
             <Box position="relative" py="8">
               <Divider />
               <AbsoluteCenter bg="white" color="gray.600" px="4">

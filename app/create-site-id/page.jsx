@@ -4,8 +4,8 @@ import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 
-import { useUser } from '../../stores/userStore';
-import { updateSlug, isSlugAvailable } from '../../services/userService';
+import { useUser } from '@/stores/userStore';
+import { updateSlug, isSlugAvailable } from '@/services/userService';
 
 import {
   Box,
