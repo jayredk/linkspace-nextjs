@@ -1,13 +1,14 @@
 'use client'
 
 import { useEffect, useState } from 'react';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 
 import MultiTypeBlock from '@/components/MultiTypeBlock';
 import UserProfile from '@/components/UserProfile';
 import BlockEditorModal from './BlockEditorModal';
 import ProfileEditorModal from './ProfileEditorModal';
 
+import { useRouter } from 'next/navigation';
 import { useUser, useSetUser } from '@/stores/userStore';
 import { getUserInfo } from '@/services/userService';
 
@@ -53,6 +54,7 @@ import { FiExternalLink } from 'react-icons/fi';
 import {
   bgColorsMap
 } from '@/constants/utilityMaps';
+
 
 function DraggableItemPanel() {
   return (
@@ -231,6 +233,19 @@ export default function Dashboard() {
   } = useDisclosure();
   const [tempBlockData, setTempBlockData] = useState({});
 
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    const auth = getAuth();
+
+    try {
+      await signOut(auth);
+      router.push('/');
+    } catch (error) {
+      alert(error);
+    }
+  };
+
   useEffect(() => {
     const loadUser = async () => {
       try {
@@ -252,6 +267,8 @@ export default function Dashboard() {
           uid: currentUser.uid,
         });
         loadUser();
+      } else {
+        router.push('/');
       }
     });
 
@@ -304,6 +321,7 @@ export default function Dashboard() {
                   w="100%"
                   justifyContent="flex-start"
                   leftIcon={<Icon as={MdLogout} />}
+                  onClick={handleLogout}
                 >
                   登出
                 </Button>
