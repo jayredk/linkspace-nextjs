@@ -24,6 +24,7 @@ export default function User({ params }) {
 
   const [profile, setProfile] = useState({});
   const [blocks, setBlocks] = useState([]);
+  const [slug, setSlug] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -38,6 +39,7 @@ export default function User({ params }) {
           const userData = querySnapshot.docs[0].data();
 
           setProfile(userData.profile);
+          setSlug(userData.slug);
           setBlocks(userData.blocks);
         }
       } catch (error) {
@@ -59,7 +61,7 @@ export default function User({ params }) {
       <Skeleton isLoaded={!isLoading} startColor="#1a1a1a" endColor="#000" fadeDuration={1.5} minH="100vh">
         <Container maxW="lg" py="4rem">
           <VStack spacing={8}>
-            {Object.keys(profile).length && <UserProfile profile={profile} />}
+            {Object.keys(profile).length && <UserProfile profile={profile} slug={slug} />}
             {blocks.map((block, index) => {
               return (
                 <MultiTypeBlock

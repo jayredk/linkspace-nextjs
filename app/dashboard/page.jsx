@@ -382,7 +382,7 @@ export default function Dashboard() {
 
   const handleCopyUrl = async () => {
     try {
-      await navigator.clipboard.writeText(profile.siteUrl);
+      await navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_DOMAIN_NAME}/${slug}`);
       setIsUrlCopy(true);
 
       setTimeout(() => {
@@ -644,7 +644,7 @@ export default function Dashboard() {
                         </Link>
                       </Tooltip>
                     </InputGroup>
-                    <UserProfile profile={profile}>
+                    <UserProfile profile={profile} slug={slug}>
                       <Button onClick={openEditProfileModal}>
                         編輯個人檔案
                       </Button>
