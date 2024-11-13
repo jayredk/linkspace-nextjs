@@ -161,7 +161,7 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
             position="relative"
           >
             <AspectRatio w="100%" ratio={2 / 1}>
-              <Image src={block.imageUrl} alt="naruto" objectFit="cover" />
+              <Image src={block.imageUrl} alt={block.text} objectFit="cover" />
             </AspectRatio>
             <Text
               bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
@@ -191,7 +191,7 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
             <AspectRatio w="100%" ratio={1 / 1}>
               <Image
                 src={block.imageUrl}
-                alt="naruto"
+                alt={block.text}
                 objectFit="cover"
                 borderRadius="lg"
               />
@@ -229,7 +229,7 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
                 <AspectRatio w="100%" ratio={1 / 1}>
                   <Image
                     src={block.imageUrl}
-                    alt="naruto"
+                    alt={block.text}
                     borderRadius="md"
                     objectFit="cover"
                   />
@@ -280,7 +280,7 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
             playlabel={'Play: ' + block.videoDescription}
           >
             <a
-              href="https://youtube.com/watch?v=DZkbDCSdC1Q"
+              href="#"
               className="lty-playbtn"
               title="Play Video"
             >
