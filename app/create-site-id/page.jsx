@@ -46,7 +46,7 @@ export default function SiteIdCreator() {
         return alert('此 ID 已被使用！');
       }
 
-      router.push('/login');
+      router.push('/dashboard');
     } catch (error) {
       console.error(error);
     }

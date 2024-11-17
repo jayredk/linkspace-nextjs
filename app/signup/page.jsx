@@ -87,7 +87,7 @@ export default function Signup() {
             },
           ],
         },
-        blocks: [
+        sections: [
           {
             id: crypto.randomUUID(),
             type: 'text-button',
