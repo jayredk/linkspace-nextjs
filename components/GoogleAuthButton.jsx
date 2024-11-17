@@ -55,10 +55,11 @@ export default function GoogleAuthButton({ children }) {
               },
             ],
           },
-          blocks: [
+          sections: [
             {
               id: crypto.randomUUID(),
               type: 'text-button',
+              is_public: true,
               isSolid: false,
               hasSubtitle: false,
               hasImage: false,

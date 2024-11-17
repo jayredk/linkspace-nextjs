@@ -23,7 +23,7 @@ export default function User({ params }) {
   const { siteId } = params;
 
   const [profile, setProfile] = useState({});
-  const [blocks, setBlocks] = useState([]);
+  const [sections, setSections] = useState([]);
   const [slug, setSlug] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -40,7 +40,7 @@ export default function User({ params }) {
 
           setProfile(userData.profile);
           setSlug(userData.slug);
-          setBlocks(userData.blocks);
+          setSections(userData.sections);
         }
       } catch (error) {
         console.error(error);
@@ -62,15 +62,18 @@ export default function User({ params }) {
         <Container maxW="lg" py="4rem">
           <VStack spacing={8}>
             {Object.keys(profile).length && <UserProfile profile={profile} slug={slug} />}
-            {blocks.map((block, index) => {
-              return (
-                <MultiTypeBlock
-                  key={index}
-                  block={block}
-                  themeColor={profile.themeColor}
-                  isAnimating={true}
-                />
-              );
+
+            {sections.map((section, index) => {
+              if (section.is_public) {
+                return (
+                  <MultiTypeBlock
+                    key={index}
+                    section={section}
+                    themeColor={profile.themeColor}
+                    isAnimating={true}
+                  />
+                );
+              }
             })}
           </VStack>
         </Container>

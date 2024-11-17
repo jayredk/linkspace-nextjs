@@ -262,7 +262,7 @@ export default function Home() {
             pt="4rem"
             mb="8rem"
           >
-            你可以做到...
+            你可以做到……
           </Heading>
           <Flex
             flexDirection={{ base: 'column-reverse', md: 'row' }}

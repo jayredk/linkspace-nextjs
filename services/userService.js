@@ -19,10 +19,10 @@ export const getUserInfo = async (uid) => {
   }
 };
 
-export const updateUserBlocks = async (uid, newBlocks) => {
+export const updateUserSections = async (uid, newSections) => {
   try {
     await updateDoc(doc(db, 'users', uid), {
-      blocks: newBlocks,
+      sections: newSections,
     });
   } catch (error) {
     console.error(error);

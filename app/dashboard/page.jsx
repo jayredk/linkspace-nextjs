@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useState, Fragment } from 'react';
+import { useEffect, useState, useRef, Fragment } from 'react';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 
-import { DndContext, DragOverlay, useDraggable } from '@dnd-kit/core';
+import { closestCorners, DndContext, DragOverlay, useDraggable } from '@dnd-kit/core';
+
 import {
   arrayMove,
   SortableContext,
@@ -18,9 +19,14 @@ import ProfileEditorModal from './ProfileEditorModal';
 
 import { useRouter } from 'next/navigation';
 import { useUser, useSetUser } from '@/stores/userStore';
-import { getUserInfo, updateUserBlocks } from '@/services/userService';
+import { getUserInfo, updateUserSections } from '@/services/userService';
 
 import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
   Avatar,
   Box,
   Button,
@@ -42,8 +48,10 @@ import {
   Text,
   Tooltip,
   useDisclosure,
-  VStack
+  VStack,
 } from '@chakra-ui/react';
+
+import { motion, AnimatePresence } from 'framer-motion';
 
 import {
   MdContentCopy,
@@ -69,10 +77,11 @@ const blockNameMap = {
   'video-player': '影音播放器',
 };
 
-const defaultBlockItems = [
+const defaultSectionItems = [
   {
     id: 1,
     type: 'text-button',
+    is_public: true,
     isSolid: false,
     hasSubtitle: false,
     fontSize: 'sm',
@@ -89,6 +98,7 @@ const defaultBlockItems = [
   {
     id: 2,
     type: 'banner-board',
+    is_public: true,
     blocks: [
       {
         imageUrl:
@@ -101,6 +111,7 @@ const defaultBlockItems = [
   {
     id: 3,
     type: 'square-board',
+    is_public: true,
     blocks: [
       {
         imageUrl:
@@ -113,6 +124,7 @@ const defaultBlockItems = [
   {
     id: 4,
     type: 'double-square-board',
+    is_public: true,
     blocks: [
       {
         imageUrl:
@@ -131,15 +143,15 @@ const defaultBlockItems = [
   {
     id: 5,
     type: 'video-player',
+    is_public: true,
     videoUrl: 'https://www.youtube.com/watch?v=eDqfg_LexCQ',
     videoDescription: '',
   },
 ];
 
 
-
-function DraggableItemPanel({ blcokNums }) {
-  const [blockItems] = useState(defaultBlockItems);
+function DraggableItemPanel({ sectionNums }) {
+  const [blockItems] = useState(defaultSectionItems);
 
   return (
     <VStack
@@ -160,7 +172,7 @@ function DraggableItemPanel({ blcokNums }) {
       gap="1rem"
     >
       <Text alignSelf="flex-start" ml="0.75rem" mb="1rem">
-        區塊數量 {blcokNums} / 8
+        區塊數量 {sectionNums} / 8
       </Text>
       <SimpleGrid columns={2} spacing={4}>
         {blockItems.map((item) => (
@@ -170,7 +182,6 @@ function DraggableItemPanel({ blcokNums }) {
     </VStack>
   );
 }
-
 
 function DraggableItem({ item }) {
   const {
@@ -226,7 +237,7 @@ function DraggableItem({ item }) {
   );
 }
 
-function DragOverlayItem({ block, themeColor }) {
+function DragOverlayItem({ section, themeColor }) {
   return (
     <Box
       overflow="hidden"
@@ -243,7 +254,7 @@ function DragOverlayItem({ block, themeColor }) {
       >
         <HStack spacing={2}>
           <IconButton
-            aria-label="Sort block"
+            aria-label="Sort section"
             bgColor="transparent"
             cursor="grab"
             fontSize="1.25rem"
@@ -254,14 +265,14 @@ function DragOverlayItem({ block, themeColor }) {
         <HStack spacing={2}>
           <Tooltip label="複製" borderRadius="1.5rem">
             <IconButton
-              aria-label="Copy block"
+              aria-label="Copy section"
               bgColor="transparent"
               icon={<Icon as={BsCopy} />}
             />
           </Tooltip>
           <Tooltip label="刪除" borderRadius="1.5rem">
             <IconButton
-              aria-label="Delete block"
+              aria-label="Delete section"
               bgColor="transparent"
               fontSize="1.25rem"
               icon={<Icon as={MdDelete} />}
@@ -271,16 +282,17 @@ function DragOverlayItem({ block, themeColor }) {
         </HStack>
       </Flex>
 
-      <MultiTypeBlock block={block} themeColor={themeColor} />
+      <MultiTypeBlock section={section} themeColor={themeColor} />
     </Box>
   );
 }
 
 
-function SortableBlock({
-  block,
-  openEditBlockModal,
-  setTempBlockData,
+function SortableSection({
+  section,
+  setSections,
+  openEditSectionModal,
+  setTempSection,
   themeColor,
   isTranslate,
 }) {
@@ -292,8 +304,15 @@ function SortableBlock({
     transition,
     isDragging,
   } = useSortable({
-    id: block.id,
+    id: section.id,
   });
+
+  const user = useUser();
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = useRef(null);
+  const [action, setAction] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getTransformStyle = () => {
     if (isTranslate) return 'translateY(20px)';
@@ -308,71 +327,221 @@ function SortableBlock({
     transition: isTranslate ? 'transform .5s' : transition,
   };
 
-  const handleEditBlock = () => {
-    setTempBlockData(block);
-    openEditBlockModal();
+  const handleEditSection = () => {
+    setTempSection(section);
+    openEditSectionModal();
+  };
+
+  const toggleSectionPublic = () => {
+    let newSections = null;
+    const currentSection = section;
+
+    setSections((prevState) => {
+      newSections = prevState.map((section) => {
+        if (section.id === currentSection.id) {
+          return {
+            ...section,
+            is_public: !section.is_public
+          };
+        }
+
+        return section;
+      });
+
+      return newSections;
+      
+    });
+    updateUserSections(user.uid, newSections);
+  };
+
+  const handleCopySection = async () => {
+    let newSections = null;
+    const currentSection = section;
+
+
+    setSections((prevState) => {
+      const newIndex =
+          prevState.findIndex((section) => section.id === currentSection.id) + 1;
+
+      newSections = [...prevState];
+      newSections.splice(newIndex, 0, { ...currentSection, id: crypto.randomUUID() });
+
+      return newSections;
+    });
+    updateUserSections(user.uid, newSections);
+
+  };
+
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDeleteSection = async () => {
+    let newSections = null;
+    const currentSection = section;
+
+    setIsDeleting(true);
+
+    await new Promise((resolve) => setTimeout(resolve, 800));
+
+    setSections((prevState) => {
+      newSections = prevState.filter(
+        (section) => section.id !== currentSection.id
+      );
+
+      return newSections;
+    });
+    updateUserSections(user.uid, newSections);
+
+    setIsDeleting(false);
+  };
+
+  const confirmAction = async () => {
+    setIsLoading(true);
+
+    switch (action) {
+      case 'delete':
+        await handleDeleteSection();
+        break;
+
+      case 'copy':
+        await handleCopySection();
+        break;
+
+      default:
+        break;
+    }
+
+    setIsLoading(false);
+    onClose();
+
   };
 
   return (
-    <Box
-      ref={setNodeRef}
-      {...attributes}
-      style={style}
-      overflow="hidden"
-      w="100%"
-      opacity={isDragging ? 0.5 : 1}
-      bgColor="white"
-      borderTopRadius="1rem"
-      borderBottomRadius="xl"
-    >
-      <Flex
-        bgColor="gray.200"
+    <>
+      <Box
+        ref={setNodeRef}
+        {...attributes}
+        style={style}
+        position="relative"
+        overflow="hidden"
+        w="100%"
+        opacity={isDragging ? 0.5 : 1}
+        bgColor="transparent"
         borderTopRadius="1rem"
-        justifyContent="space-between"
-        p="0.5rem 1rem"
+        borderBottomRadius="xl"
       >
-        <HStack spacing={2}>
-          <IconButton
-            {...listeners}
-            aria-label="Sort block"
-            bgColor="transparent"
-            cursor="grab"
-            fontSize="1.25rem"
-            icon={<Icon as={MdDragIndicator} />}
-          />
-          <Switch />
-        </HStack>
-        <HStack spacing={2}>
-          <Tooltip label="複製" borderRadius="1.5rem">
-            <IconButton
-              aria-label="Copy block"
-              bgColor="transparent"
-              icon={<Icon as={BsCopy} />}
-            />
-          </Tooltip>
-          <Tooltip label="刪除" borderRadius="1.5rem">
-            <IconButton
-              aria-label="Delete block"
-              bgColor="transparent"
-              fontSize="1.25rem"
-              icon={<Icon as={MdDelete} />}
-            />
-          </Tooltip>
-          <Button onClick={handleEditBlock} rightIcon={<Icon as={MdEdit} />}>
-            編輯
-          </Button>
-        </HStack>
-      </Flex>
-
-      <MultiTypeBlock block={block} themeColor={themeColor} />
-    </Box>
+        <AnimatePresence>
+          {section && !isDeleting && (
+            <Box
+              key={section.id}
+              as={motion.div}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, x: -100 }}
+              transition={{ duration: 0.8 }}
+              bgColor="white"
+            >
+              <Flex
+                position="relative"
+                zIndex="1"
+                bgColor="gray.200"
+                borderTopRadius="1rem"
+                justifyContent="space-between"
+                p="0.5rem 1rem"
+              >
+                <HStack spacing={2}>
+                  <IconButton
+                    {...listeners}
+                    aria-label="Sort block"
+                    bgColor="transparent"
+                    cursor="grab"
+                    fontSize="1.25rem"
+                    icon={<Icon as={MdDragIndicator} />}
+                  />
+                  <Switch
+                    isChecked={section.is_public}
+                    onChange={toggleSectionPublic}
+                  />
+                </HStack>
+                <HStack spacing={2}>
+                  <Tooltip label="複製" borderRadius="1.5rem">
+                    <IconButton
+                      aria-label="Copy block"
+                      bgColor="transparent"
+                      icon={<Icon as={BsCopy} />}
+                      onClick={() => {
+                        setAction('copy');
+                        onOpen();
+                      }}
+                    />
+                  </Tooltip>
+                  <Tooltip label="刪除" borderRadius="1.5rem">
+                    <IconButton
+                      aria-label="Delete block"
+                      bgColor="transparent"
+                      fontSize="1.25rem"
+                      icon={<Icon as={MdDelete} />}
+                      onClick={() => {
+                        setAction('delete');
+                        onOpen();
+                      }}
+                    />
+                  </Tooltip>
+                  <Button
+                    onClick={handleEditSection}
+                    rightIcon={<Icon as={MdEdit} />}
+                  >
+                    編輯
+                  </Button>
+                </HStack>
+              </Flex>
+              <MultiTypeBlock section={section} themeColor={themeColor} />
+              <Box
+                hidden={section.is_public ? true : false}
+                userSelect="none"
+                cursor="default"
+                position="absolute"
+                inset={0}
+                backgroundColor="black"
+                opacity={0.7}
+              ></Box>
+            </Box>
+          )}
+        </AnimatePresence>
+      </Box>
+      <AlertDialog
+        motionPreset="slideInBottom"
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+        isOpen={isOpen}
+        isCentered
+      >
+        <AlertDialogOverlay />
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            {action === 'delete' ? '確認要刪除區塊嗎?' : '確認要複製區塊嗎?'}
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <Button ref={cancelRef} onClick={onClose}>
+              取消
+            </Button>
+            <Button
+              onClick={confirmAction}
+              isLoading={isLoading}
+              colorScheme={action === 'delete' ? 'red' : 'blue'}
+              ml={3}
+            >
+              確認
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
 
-
 export default function Dashboard() {
   const [profile, setProfile] = useState({});
-  const [blocks, setBlocks] = useState([]);
+  const [sections, setSections] = useState([]);
   const [slug, setSlug] = useState('');
 
   const user = useUser();
@@ -382,7 +551,9 @@ export default function Dashboard() {
 
   const handleCopyUrl = async () => {
     try {
-      await navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_DOMAIN_NAME}/${slug}`);
+      await navigator.clipboard.writeText(
+        `${process.env.NEXT_PUBLIC_DOMAIN_NAME}/${slug}`
+      );
       setIsUrlCopy(true);
 
       setTimeout(() => {
@@ -400,11 +571,11 @@ export default function Dashboard() {
   } = useDisclosure();
 
   const {
-    isOpen: isEditBlockModalOpen,
-    onOpen: openEditBlockModal,
-    onClose: closeEditBlockModal,
+    isOpen: isEditSectionModalOpen,
+    onOpen: openEditSectionModal,
+    onClose: closeEditSectionModal,
   } = useDisclosure();
-  const [tempBlockData, setTempBlockData] = useState({});
+  const [tempSection, setTempSection] = useState({});
 
   const router = useRouter();
 
@@ -426,7 +597,7 @@ export default function Dashboard() {
 
         setProfile(userData.profile);
         setSlug(userData.slug);
-        setBlocks(userData.blocks);
+        setSections(userData.sections);
       } catch (error) {
         alert(error);
       }
@@ -448,35 +619,33 @@ export default function Dashboard() {
     return () => unsubscribe();
   }, [setUser, user.uid, router]);
 
-
-
-  const [activeDragBlockId, setActiveDragBlockId] = useState(null);
-  const [hoverBlockIndex, setHoverBlockIndex] = useState(null);
-  const [isFromBlockItems, setIsFromBlockItems] = useState(false);
+  const [activeDragSectionId, setActiveDragSectionId] = useState(null);
+  const [hoverSectionIndex, setHoverSectionIndex] = useState(null);
+  const [isFromSectionItems, setIsFromSectionItems] = useState(false);
 
   const handleDragStart = (event) => {
-    const isDragFromBlockItems = defaultBlockItems.some(
+    const isDragFromBlockItems = defaultSectionItems.some(
       (item) => event.active.id === item.id
     );
 
-    setIsFromBlockItems(isDragFromBlockItems);
-    setActiveDragBlockId(event.active.id);
+    setIsFromSectionItems(isDragFromBlockItems);
+    setActiveDragSectionId(event.active.id);
   };
 
   const handleDragOver = (event) => {
     const { active, over } = event;
 
     if (!over) {
-      setHoverBlockIndex(null);
-      setActiveDragBlockId(null);
+      setHoverSectionIndex(null);
+      setActiveDragSectionId(null);
       return;
     }
 
-    if (isFromBlockItems) {
-      const overIndex = blocks.findIndex((item) => item.id === over.id);
-      setHoverBlockIndex(overIndex);
+    if (isFromSectionItems) {
+      const overIndex = sections.findIndex((item) => item.id === over.id);
+      setHoverSectionIndex(overIndex);
 
-      let activeItem = [...defaultBlockItems, ...blocks].find(
+      let activeItem = [...defaultSectionItems, ...sections].find(
         (item) => item.id === active.id
       );
       activeItem = { ...activeItem };
@@ -488,12 +657,12 @@ export default function Dashboard() {
     const { active, over } = event;
 
     if (!over) {
-      setActiveDragBlockId(null);
-      setHoverBlockIndex(null);
+      setActiveDragSectionId(null);
+      setHoverSectionIndex(null);
       return;
     }
 
-    let activeItem = [...defaultBlockItems, ...blocks].find(
+    let activeItem = [...defaultSectionItems, ...sections].find(
       (item) => item.id === active.id
     );
     activeItem = { ...activeItem };
@@ -501,26 +670,26 @@ export default function Dashboard() {
 
     if (active.id === over.id) return;
 
-    if (isFromBlockItems) {
-      const overIndex = blocks.findIndex((item) => item.id === over.id);
-      const newBlocks = [...blocks];
+    if (isFromSectionItems) {
+      const overIndex = sections.findIndex((item) => item.id === over.id);
+      const newSections = [...sections];
       if (overIndex === -1) {
-        return [...blocks, activeItem];
+        return [...sections, activeItem];
       }
-      newBlocks.splice(overIndex, 0, activeItem);
+      newSections.splice(overIndex, 0, activeItem);
 
-      setBlocks(newBlocks);
-      updateUserBlocks(user.uid, newBlocks);
+      setSections(newSections);
+      updateUserSections(user.uid, newSections);
     } else {
-      const oldIndex = blocks.findIndex((item) => item.id === active.id);
-      const newIndex = blocks.findIndex((item) => item.id === over.id);
-      const newBlocks = arrayMove(blocks, oldIndex, newIndex);
+      const oldIndex = sections.findIndex((item) => item.id === active.id);
+      const newIndex = sections.findIndex((item) => item.id === over.id);
+      const newSections = arrayMove(sections, oldIndex, newIndex);
 
-      setBlocks(newBlocks);
-      updateUserBlocks(user.uid, newBlocks);
+      setSections(newSections);
+      updateUserSections(user.uid, newSections);
     }
 
-    setHoverBlockIndex(null);
+    setHoverSectionIndex(null);
   };
 
   return (
@@ -539,8 +708,8 @@ export default function Dashboard() {
           align="center"
           mx={{ base: '0.5rem', md: '4rem' }}
         >
-          <Link
-            href="/dashboard"
+          <Text
+            userSelect="none"
             p="0.75rem"
             fontSize="1.75rem"
             fontWeight="bold"
@@ -548,7 +717,7 @@ export default function Dashboard() {
             letterSpacing="0.05em"
           >
             Linkspace
-          </Link>
+          </Text>
           <Menu isLazy>
             <MenuButton>
               <Avatar
@@ -587,11 +756,12 @@ export default function Dashboard() {
         <Container maxW="lg" pt="10rem" pb="5rem">
           <Flex justifyContent="space-between">
             <DndContext
+              collisionDetection={closestCorners}
               onDragStart={handleDragStart}
               onDragOver={handleDragOver}
               onDragEnd={handleDragEnd}
             >
-              <DraggableItemPanel blcokNums={blocks.length} />
+              <DraggableItemPanel sectionNums={sections.length} />
               <VStack w="100%" spacing={8}>
                 {Object.keys(profile).length && (
                   <>
@@ -651,17 +821,16 @@ export default function Dashboard() {
                     </UserProfile>
                   </>
                 )}
-
                 <SortableContext
-                  items={blocks}
+                  items={sections}
                   strategy={verticalListSortingStrategy}
                 >
-                  {blocks &&
-                    blocks.map((block, index) => {
-                      const isShowPlaceholder = hoverBlockIndex === index;
+                  {sections &&
+                    sections.map((section, index) => {
+                      const isShowPlaceholder = hoverSectionIndex === index;
 
                       return (
-                        <Fragment key={block.id}>
+                        <Fragment key={section.id}>
                           <Box
                             display={isShowPlaceholder ? 'block' : 'none'}
                             overflow="hidden"
@@ -673,24 +842,24 @@ export default function Dashboard() {
                             borderBottomRadius="xl"
                             transition="opacity .5s"
                           />
-                          <SortableBlock
-                            block={block}
-                            openEditBlockModal={openEditBlockModal}
-                            setTempBlockData={setTempBlockData}
+                          <SortableSection
+                            section={section}
+                            setSections={setSections}
+                            openEditSectionModal={openEditSectionModal}
+                            setTempSection={setTempSection}
                             themeColor={profile.themeColor}
-                            isTranslate={index >= parseInt(hoverBlockIndex)}
+                            isTranslate={index >= parseInt(hoverSectionIndex)}
                           />
                         </Fragment>
                       );
                     })}
                 </SortableContext>
               </VStack>
-
               <DragOverlay>
-                {!isFromBlockItems ? (
+                {!isFromSectionItems ? (
                   <DragOverlayItem
-                    block={blocks.find(
-                      (block) => block.id === activeDragBlockId
+                    section={sections.find(
+                      (section) => section.id === activeDragSectionId
                     )}
                     themeColor={profile.themeColor}
                   />
@@ -701,10 +870,10 @@ export default function Dashboard() {
         </Container>
       </Box>
       <BlockEditorModal
-        isOpen={isEditBlockModalOpen}
-        onClose={closeEditBlockModal}
-        setBlocks={setBlocks}
-        tempBlockData={tempBlockData}
+        isOpen={isEditSectionModalOpen}
+        onClose={closeEditSectionModal}
+        setSections={setSections}
+        tempSection={tempSection}
         themeColor={profile.themeColor}
       />
 

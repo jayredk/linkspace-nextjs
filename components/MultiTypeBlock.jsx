@@ -33,23 +33,28 @@ import 'lite-youtube-embed/src/lite-yt-embed.css';
 import 'animate.css';
 import '../assets/styles/effect.css'
 
-export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
+
+export default function MultiTypeBlock({ section, themeColor, isAnimating }) {
 
   useEffect(() => {
-    import('lite-youtube-embed')
-  }, [])
+  import('lite-youtube-embed')
+}, [])
 
-  
   return (
-    <Box w="100%" bgColor="transparent" borderRadius="md">
-      {block.type === 'text-button' && (
+    <Box
+      as="section"
+      w="100%"
+      bgColor="transparent"
+      borderRadius="md"
+    >
+      {section.type === 'text-button' && (
         <VStack
           spacing={4}
           flexGrow="1"
           align="stretch"
           textAlign="center"
         >
-          {block.buttons.map((button, index) => {
+          {section.buttons.map((button, index) => {
             return (
               <Link
                 style={{ '--animate-duration': '2s' }}
@@ -63,9 +68,9 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
                 display="flex"
                 alignItems="center"
                 backgroundColor={
-                  block.isSolid ? themeColorsMap[themeColor] : 'transparent'
+                  section.isSolid ? themeColorsMap[themeColor] : 'transparent'
                 }
-                color={block.isSolid ? '#fff' : themeColorsMap[themeColor]}
+                color={section.isSolid ? '#fff' : themeColorsMap[themeColor]}
                 textDecoration="none"
                 border="2px"
                 borderColor={themeColorsMap[themeColor]}
@@ -74,28 +79,26 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
                 _hover={{
                   transform: 'scale(1.03)',
                   textDecoration: 'none',
-                  backgroundColor: block.isSolid
+                  backgroundColor: section.isSolid
                     ? '#fff'
                     : themeColorsMap[themeColor],
-                  color: block.isSolid
-                    ? themeColorsMap[themeColor]
-                    : '#fff',
+                  color: section.isSolid ? themeColorsMap[themeColor] : '#fff',
                 }}
               >
-                {block.hasSubtitle && !block.hasImage && (
+                {section.hasSubtitle && !section.hasImage && (
                   <Icon
                     as={iconMap[button.icon]}
-                    fontSize={iconSizeMapWithSubtitle[block.fontSize]}
+                    fontSize={iconSizeMapWithSubtitle[section.fontSize]}
                   />
                 )}
-                {!block.hasSubtitle && !block.hasImage && (
+                {!section.hasSubtitle && !section.hasImage && (
                   <Icon
                     as={iconMap[button.icon]}
-                    fontSize={iconSizeMap[block.fontSize]}
+                    fontSize={iconSizeMap[section.fontSize]}
                   />
                 )}
 
-                {block.hasImage && button.imageUrl && (
+                {section.hasImage && button.imageUrl && (
                   <Flex
                     justifyContent="center"
                     alignItems="center"
@@ -113,7 +116,7 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
                   </Flex>
                 )}
 
-                {block.hasImage && !button.imageUrl && (
+                {section.hasImage && !button.imageUrl && (
                   <Flex
                     justifyContent="center"
                     alignItems="center"
@@ -126,19 +129,25 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
                   </Flex>
                 )}
 
-                {block.hasSubtitle ? (
+                {section.hasSubtitle ? (
                   <Text
-                    fontSize={fontSizeMapWithSubtitle[block.fontSize]}
+                    fontSize={fontSizeMapWithSubtitle[section.fontSize]}
+                    fontWeight="bold"
                     mx="auto"
                   >
                     {button.text}
-                    <Text as="span" display="block" fontSize="md">
+                    <Text
+                      as="span"
+                      display="block"
+                      fontSize="md"
+                      fontWeight="medium"
+                    >
                       {button.subText}
                     </Text>
                   </Text>
                 ) : (
                   <Text
-                    fontSize={fontSizeMap[block.fontSize]}
+                    fontSize={fontSizeMap[section.fontSize]}
                     fontWeight="bold"
                     mx="auto"
                   >
@@ -151,109 +160,140 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
         </VStack>
       )}
 
-      {block.type === 'banner-board' &&
-        block.blocks.map((block, index) => (
+      {section.type === 'banner-board' &&
+        section.blocks.map((block, index) => (
           <Link
             key={index}
             href={block.linkUrl}
             isExternal
             display="block"
             position="relative"
+            borderRadius="lg"
+            overflow="hidden"
           >
             <AspectRatio w="100%" ratio={2 / 1}>
-              <Image src={block.imageUrl} alt={block.text} objectFit="cover" />
+              {block.imageUrl ? (
+                <Image
+                  src={block.imageUrl}
+                  alt={block.text}
+                  objectFit="cover"
+                />
+              ) : (
+                <Box bgColor="#E2E8F0">
+                  <Icon boxSize="50%" as={MdImage} />
+                </Box>
+              )}
             </AspectRatio>
-            <Text
-              bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
-              color="white"
-              fontSize="sm"
-              textAlign="left"
-              position="absolute"
-              bottom="0"
-              left="0"
-              right="0"
-              p="1rem"
-            >
-              {block.text}
-            </Text>
+            {block.text && (
+              <Text
+                bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
+                color="white"
+                fontSize="sm"
+                textAlign="left"
+                position="absolute"
+                bottom="0"
+                left="0"
+                right="0"
+                p="1rem"
+              >
+                {block.text}
+              </Text>
+            )}
           </Link>
         ))}
 
-      {block.type === 'square-board' &&
-        block.blocks.map((block, index) => (
+      {section.type === 'square-board' &&
+        section.blocks.map((block, index) => (
           <Link
             key={index}
             href={block.linkUrl}
             isExternal
             display="block"
             position="relative"
+            borderRadius="lg"
+            overflow="hidden"
           >
             <AspectRatio w="100%" ratio={1 / 1}>
-              <Image
-                src={block.imageUrl}
-                alt={block.text}
-                objectFit="cover"
-                borderRadius="lg"
-              />
+              {block.imageUrl ? (
+                <Image
+                  src={block.imageUrl}
+                  alt={block.text}
+                  objectFit="cover"
+                />
+              ) : (
+                <Box bgColor="#E2E8F0">
+                  <Icon boxSize="50%" as={MdImage} />
+                </Box>
+              )}
             </AspectRatio>
-            <Text
-              bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
-              color="white"
-              fontSize="sm"
-              textAlign="left"
-              position="absolute"
-              bottom="0"
-              left="0"
-              right="0"
-              p="1rem"
-            >
-              {block.text}
-            </Text>
+            {block.text && (
+              <Text
+                bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
+                color="white"
+                fontSize="sm"
+                textAlign="left"
+                position="absolute"
+                bottom="0"
+                left="0"
+                right="0"
+                p="1rem"
+              >
+                {block.text}
+              </Text>
+            )}
           </Link>
         ))}
 
-      {block.type === 'double-square-board' && (
+      {section.type === 'double-square-board' && (
         <SimpleGrid columns={2} spacing={4}>
-          {block.blocks.map((block, index) => {
+          {section.blocks.map((block, index) => {
             return (
               <Link
                 key={index}
                 href={block.linkUrl}
                 target="_blank"
                 position="relative"
+                borderRadius="md"
+                overflow="hidden"
                 _hover={{
                   transform: 'scale(1.03)',
                   transition: 'transform .3s',
                 }}
               >
-                <AspectRatio w="100%" ratio={1 / 1}>
-                  <Image
-                    src={block.imageUrl}
-                    alt={block.text}
-                    borderRadius="md"
-                    objectFit="cover"
-                  />
+                <AspectRatio w="100%" ratio={1 / 1} >
+                  {block.imageUrl ? (
+                    <Image
+                      src={block.imageUrl}
+                      alt={block.text}
+                      objectFit="cover"
+                    />
+                  ) : (
+                    <Box bgColor="#E2E8F0">
+                      <Icon boxSize="50%" as={MdImage} />
+                    </Box>
+                  )}
                 </AspectRatio>
-                <Text
-                  bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
-                  borderRadius="md"
-                  color="white"
-                  fontSize="sm"
-                  position="absolute"
-                  bottom="0"
-                  left="0"
-                  right="0"
-                  p="1rem"
-                >
-                  {block.text}
-                </Text>
+                {block.text && (
+                  <Text
+                    bgImage="linear-gradient(transparent, rgba(0, 0, 0, 0.8) 90%)"
+                    color="white"
+                    fontSize="sm"
+                    textAlign="left"
+                    position="absolute"
+                    bottom="0"
+                    left="0"
+                    right="0"
+                    p="1rem"
+                  >
+                    {block.text}
+                  </Text>)}
               </Link>
             );
           })}
         </SimpleGrid>
       )}
 
-      {block.type === 'video-player' && (
+      {section.type === 'video-player' && (
         <Box
           sx={{
             '.lty-playbtn': {
@@ -276,16 +316,15 @@ export default function MultiTypeBlock({ block, themeColor, isAnimating }) {
           }}
         >
           <lite-youtube
-            videoid={getVideoId(block.videoUrl)}
-            playlabel={'Play: ' + block.videoDescription}
+            videoid={getVideoId(section.videoUrl)}
+            playlabel={'Play: ' + section.videoDescription}
+            style={{
+              backgroundImage: `url(https://i.ytimg.com/vi/${getVideoId(section.videoUrl)}/hqdefault.jpg)`,
+            }}
           >
-            <a
-              href="#"
-              className="lty-playbtn"
-              title="Play Video"
-            >
+            <a href="#" className="lty-playbtn" title="Play Video">
               <span className="lyt-visually-hidden">
-                Play Video: {block.videoDescription}
+                Play Video: {section.videoDescription}
               </span>
             </a>
           </lite-youtube>

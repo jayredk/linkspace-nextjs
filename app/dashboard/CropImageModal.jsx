@@ -26,7 +26,6 @@ import getCroppedImg from '@/utils/cropImage';
 
 export default function CropImageModal({
   isOpen,
-  onOpen,
   onClose,
   tempImageInfo,
   setTempCroppedImage,
@@ -98,7 +97,7 @@ export default function CropImageModal({
               crop={crop}
               rotation={rotation}
               zoom={zoom}
-              aspect={1 / 1}
+              aspect={tempImageInfo.type === 'rectangle' ? `${2 / 1}` : `${1 / 1}`}
               onCropChange={setCrop}
               onCropComplete={onCropComplete}
               onZoomChange={setZoom}
