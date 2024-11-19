@@ -280,8 +280,13 @@ export default function BlockEditorModal({
     setIsLoading(true);
 
     try {
-      const updatedModalState = await handleUploadImage();
+      const type = buttons.length > 0 ? 'buttons' : 'blocks';
+      let uploadData = modalState[type];
+      let updatedModalState = { ...modalState };
 
+      if (uploadData) {
+        updatedModalState = await handleUploadImage(type, uploadData);
+      }
       
 
       setSections((prevState) => {
@@ -357,10 +362,8 @@ export default function BlockEditorModal({
     onCropModalOpen();
   }
 
-  async function handleUploadImage() {
+  async function handleUploadImage(type, uploadData) {
     const uploadImages = [];
-    const type = buttons.length > 0 ? 'buttons' : 'blocks';
-    let uploadData = modalState[type];
 
     await Promise.all(
       uploadData.map(async (item, index) => {
