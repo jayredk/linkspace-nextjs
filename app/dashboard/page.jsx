@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState, useRef, Fragment } from 'react';
+import Image from 'next/image';
+
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 
 import { DndContext, DragOverlay, useDraggable } from '@dnd-kit/core';
@@ -68,13 +70,36 @@ import { FiExternalLink } from 'react-icons/fi';
 
 import { bgColorsMap } from '@/constants/utilityMaps';
 
-const blockNameMap = {
-  'text-button': '文字按鈕',
-  'banner-board': '橫幅看板',
-  'square-board': '方格看板',
-  'double-square-board': '雙方格看板',
-  'video-player': '影音播放器',
+import TextButtonIcon from '@/assets/icons/text-button.svg';
+import BannerBoardIcon from '@/assets/icons/banner-board.svg';
+import SquareBoardIcon from '@/assets/icons/square-board.svg';
+import DoubleSquareBoardIcon from '@/assets/icons/double-square-board.svg';
+import VideoPlayerIcon from '@/assets/icons/video-player.svg';
+
+
+const blockMap = {
+  'text-button': {
+    name: '文字按鈕',
+    icon: TextButtonIcon,
+  },
+  'banner-board': {
+    name: '橫幅看板',
+    icon: BannerBoardIcon,
+  },
+  'square-board': {
+    name: '方格看板',
+    icon: SquareBoardIcon,
+  },
+  'double-square-board': {
+    name: '雙方格看板',
+    icon: DoubleSquareBoardIcon,
+  },
+  'video-player': {
+    name: '影音播放器',
+    icon: VideoPlayerIcon,
+  },
 };
+
 
 const defaultSectionItems = [
   {
@@ -223,13 +248,18 @@ function DraggableItem({ item }) {
           borderStyle="solid"
           borderRadius="1.5rem"
           boxShadow="rgba(50, 50, 0, 0.05) 0px 2px 5px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1px 0px"
+          flexDirection="column"
           justifyContent="center"
           alignItems="center"
           w="100px"
           h="100px"
-          p="1rem"
+          p="0.5rem"
+          fontSize="sm"
         >
-          {blockNameMap[item.type]}
+          <Flex justifyContent="center" boxSize="40px">
+            <Image src={blockMap[item.type].icon} alt={blockMap[item.type].name} width={40} height={40} />
+          </Flex>
+          {blockMap[item.type].name}
         </Flex>
       </Tooltip>
     </Box>

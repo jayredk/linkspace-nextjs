@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <rect x="2" y="4" width="20" height="16" rx="2" fill="#232020"/>
+    <path d="M10.5 9.5L14.5 12L10.5 14.5V9.5Z" fill="#FCF6EE"/>
+    <!-- Progress bar background -->
+    <rect x="4" y="17.5" width="16" height="0.5" fill="#FCF6EE" opacity="0.3"/>
+    <!-- Progress bar -->
+    <rect x="4" y="17.5" width="10" height="0.5" fill="#FCF6EE"/>
+</svg>

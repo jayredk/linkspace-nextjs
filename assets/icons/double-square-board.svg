@@ -1,0 +1,42 @@
+<svg
+  width="200"
+  height="100"
+  viewBox="0 0 200 100"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <rect
+    x="10"
+    y="10"
+    width="90"
+    height="90"
+    rx="10"
+    fill="#232020"
+  />
+
+  <polygon points="25,80 45,60 65,80" fill="#FCF6EE" />
+  <polygon points="45,80 65,50 85,80" fill="#FCF6EE" />
+  <circle
+    cx="32"
+    cy="32"
+    r="6"
+    fill="#FFFFFF"
+  />
+
+  <rect
+    x="110"
+    y="10"
+    width="90"
+    height="90"
+    rx="10"
+    fill="#232020"
+  />
+
+  <polygon points="125,80 145,60 165,80" fill="#FCF6EE" />
+  <polygon points="145,80 165,50 185,80" fill="#FCF6EE" />
+  <circle
+    cx="132"
+    cy="32"
+    r="6"
+    fill="#FFFFFF"
+  />
+</svg>
