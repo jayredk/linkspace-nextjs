@@ -3,12 +3,11 @@
 import { useEffect, useState, useRef, Fragment } from 'react';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 
-import { closestCorners, DndContext, DragOverlay, useDraggable } from '@dnd-kit/core';
+import { DndContext, DragOverlay, useDraggable } from '@dnd-kit/core';
 
 import {
   arrayMove,
   SortableContext,
-  verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { useSortable } from '@dnd-kit/sortable'
 
@@ -655,7 +654,7 @@ export default function Dashboard() {
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
-
+    
     if (!over) {
       setActiveDragSectionId(null);
       setHoverSectionIndex(null);
@@ -756,7 +755,6 @@ export default function Dashboard() {
         <Container maxW="lg" pt="10rem" pb="5rem">
           <Flex justifyContent="space-between">
             <DndContext
-              collisionDetection={closestCorners}
               onDragStart={handleDragStart}
               onDragOver={handleDragOver}
               onDragEnd={handleDragEnd}
@@ -823,12 +821,10 @@ export default function Dashboard() {
                 )}
                 <SortableContext
                   items={sections}
-                  strategy={verticalListSortingStrategy}
                 >
                   {sections &&
                     sections.map((section, index) => {
                       const isShowPlaceholder = hoverSectionIndex === index;
-
                       return (
                         <Fragment key={section.id}>
                           <Box
@@ -855,15 +851,15 @@ export default function Dashboard() {
                     })}
                 </SortableContext>
               </VStack>
+              
               <DragOverlay>
-                {!isFromSectionItems ? (
+                {!isFromSectionItems && activeDragSectionId ? (
                   <DragOverlayItem
                     section={sections.find(
                       (section) => section.id === activeDragSectionId
                     )}
                     themeColor={profile.themeColor}
-                  />
-                ) : null}
+                  />) : null}
               </DragOverlay>
             </DndContext>
           </Flex>
