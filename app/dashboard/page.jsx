@@ -79,23 +79,28 @@ import VideoPlayerIcon from '@/assets/icons/video-player.svg';
 
 const blockMap = {
   'text-button': {
-    name: '文字按鈕',
+    name: '文字連結',
+    description: '純粹的文字連結，也可以搭配 icon 或圖片',
     icon: TextButtonIcon,
   },
   'banner-board': {
     name: '橫幅看板',
+    description: '2:1 黃金比例的看板',
     icon: BannerBoardIcon,
   },
   'square-board': {
     name: '方格看板',
+    description: '1:1 跟格子一樣方正的看板',
     icon: SquareBoardIcon,
   },
   'double-square-board': {
     name: '雙方格看板',
+    description: '一個方格不夠就來兩個',
     icon: DoubleSquareBoardIcon,
   },
   'video-player': {
     name: '影音播放器',
+    description: '跟廣告牆有得比的影片播放器',
     icon: VideoPlayerIcon,
   },
 };
@@ -241,7 +246,7 @@ function DraggableItem({ item }) {
       <Tooltip
         isDisabled={isDragging}
         hasArrow
-        label="純文字按鈕，可一次收整多連結"
+        label={blockMap[item.type].description}
         placement="top"
         borderRadius="1.5rem"
         p="1rem 2rem"
