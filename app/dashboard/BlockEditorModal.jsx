@@ -1056,7 +1056,7 @@ export default function BlockEditorModal({
             mt="6rem"
             pb="3rem"
           >
-            <Container overflowY="auto" pb="3rem">
+            <Container pb="3rem">
               <VStack
                 spacing={4}
                 flexGrow="1"

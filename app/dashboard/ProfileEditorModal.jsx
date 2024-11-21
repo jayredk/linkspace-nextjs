@@ -343,6 +343,7 @@ export default function ProfileEditorModal({
                     </Flex>
                     <EditAvatar
                       avatar={tempProfile.avatar}
+                      name={tempProfile.name}
                       handleImageChange={handleImageChange}
                     />
                     <Divider my="2rem" borderColor="gray.400" />
@@ -606,6 +607,7 @@ export default function ProfileEditorModal({
 
 function EditAvatar({
   avatar,
+  name,
   index,
   handleImageChange,
   onCropModalOpen,
@@ -617,10 +619,10 @@ function EditAvatar({
           <Image
             maxW="80px"
             mr="1rem"
-            rounded="xl"
+            rounded="50%"
             objectFit="cover"
             src={avatar}
-            alt="Dan Abramov"
+            alt={name}
           />
           <Input
             data-index={index}
@@ -671,7 +673,7 @@ function EditAvatar({
       <Box flexGrow="1">
         <Flex gap="0.5rem" mb="0.5rem">
           <Button flexGrow="1">
-            上傳圖片
+            更換頭貼
             <label
               htmlFor={`uploadBtn${index}`}
               style={{
