@@ -1,6 +1,7 @@
 'use client'
 
 import {
+  AspectRatio,
   Avatar,
   AvatarGroup,
   Box,
@@ -338,7 +339,9 @@ export default function Home() {
             {highlightUsers.map((user) => (
               <Box key={user.link} as="li" listStyleType="none">
                 <Link href={user.link} target="_blank">
-                  <Avatar src={user.avatar} ignoreFallback={true} size="2xl" mb="1rem"></Avatar>
+                  <AspectRatio w="128px" borderRadius="50%" overflow="hidden" mb="1rem" ratio={1}>
+                    <Image src={user.avatar}  alt={user.name} width={256} height={256} />
+                  </AspectRatio>
                   <Heading as="h4" textAlign="center" fontSize="lg">
                     {user.name}
                   </Heading>
@@ -351,7 +354,9 @@ export default function Home() {
             {highlightUsers.map((user) => (
               <Box key={user.link} as="li" listStyleType="none">
                 <Link href={user.link} target="_blank">
-                  <Avatar src={user.avatar} ignoreFallback={true} size="2xl" mb="1rem"></Avatar>
+                  <AspectRatio w="128px" borderRadius="50%" overflow="hidden" mb="1rem" ratio={1}>
+                    <Image src={user.avatar}  alt={user.name} width={256} height={256} />
+                  </AspectRatio>
                   <Heading as="h4" textAlign="center" fontSize="lg">
                     {user.name}
                   </Heading>

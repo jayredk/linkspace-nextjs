@@ -1,9 +1,10 @@
 'use client'
 
 import { useState } from 'react';
+import Image from 'next/image';
 
 import {
-  Avatar,
+  AspectRatio,
   Box,
   Heading,
   Icon,
@@ -23,6 +24,7 @@ import {
   textColorMap,
   iconMap,
 } from '@/constants/utilityMaps';
+
 
 
 export default function UserProfile({ profile, slug, children }) {
@@ -62,7 +64,9 @@ export default function UserProfile({ profile, slug, children }) {
         />
       </Tooltip>
 
-      <Avatar size="2xl" src={profile.avatar} />
+      <AspectRatio w="128px" borderRadius="50%" overflow="hidden" ratio={1}>
+        <Image src={profile.avatar} alt={profile.name} width={256} height={256} />
+      </AspectRatio>
       <Box textAlign="center" color={textColorMap[profile.textColor]}>
         <Heading as="h1" size="md" mb="0.5rem">
           {profile.name}
