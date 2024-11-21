@@ -1,36 +1,158 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Linkspace
 
-## Getting Started
+A powerful and intuitive website building tool that allows users to easily integrate and share their social media links through a personalized landing page.
 
-First, run the development server:
+<div>
+  <img src="public/demo/sample-demo.png" alt="sample demo" style="width:30%"; />
+</div>
 
+> **Note on Development History**  
+> This repository is a Next.js implementation of the Linkspace project. The complete development history and commit log can be found in the original React repository at <a href="https://github.com/jayredk/linkspace" target="_blank">here</a>. This version has been reconstructed and optimized using Next.js framework while maintaining all the core functionalities from the original project.
+
+## Table of Contents
+- [Demo](#demo)
+- [Key Features](#key-features)
+- [Technical Highlights](#technical-highlights)
+- [System Architecture](#system-architecture)
+- [Tech Stack](#tech-stack)
+- [Development](#development)
+
+## Demo
+
+### 🌐 Live Demo
+- **Product Website**: <a href="https://linkspace-one.vercel.app/" target="_blank">linkspace-one.vercel.app</a>
+- **Sample Profile Page**: <a href="https://linkspace-one.vercel.app/briantseng" target="_blank">linkspace-one.vercel.app/briantseng</a>
+
+Try creating your own profile at our live demo site!
+
+### 🎬 Feature Showcase
+
+#### Block Management Interface
+<div>
+  <img src="public/demo/feat-dnd.gif" alt="block dnd demo" />
+</div>
+
+- Comprehensive drag and drop system:
+  - Add new blocks via drag and drop
+  - Reorder existing blocks
+- Complete block management:
+  - Quick block duplication
+  - Easy block deletion
+  - Visibility toggle for public/private content
+
+#### Block Editor Interface
+<div>
+  <img src="public/demo/feat-edit-block.gif" alt="block edit demo" />
+</div>
+
+- Type-specific block editing:
+  - Demonstrated with Text Link block:
+    - Title and URL editing
+    - Subtitle toggle option
+    - Link customization
+
+- Visual enhancement options:
+  - Animation effects selection
+    - Wobble animation
+    - Shake animation
+    - Pulse animation
+
+- Real-time preview for all changes
+
+#### Image Upload System
+<div>
+  <img src="public/demo/feat-upload-image.gif" alt="upload image demo" />
+</div>
+
+- Universal image handling solution:
+  - Consistent experience across all image upload points
+  - Demonstrated with profile picture upload
+- Comprehensive image manipulation:
+  - Interactive cropping interface
+  - Image scaling/zoom controls
+  - Rotation adjustment
+  - Real-time preview
+- Streamlined upload process:
+  - Easy image selection
+  - Immediate visual feedback
+  - Optimized image processing
+
+#### Theme Customization
+<div>
+  <img src="public/demo/feat-edit-profile.gif" alt="upload image demo" />
+</div>
+
+- Showcase different color scheme options
+- Show responsive design adaptations
+
+## Key Features
+
+### 🎨 Interactive Editor
+- **Drag-and-Drop Block Management**
+  - Implemented using dnd kit for smooth reordering
+  - Real-time preview synchronization
+  - Responsive and mobile-friendly interface
+
+### 📸 Image Processing
+- **Smart Image Cropping**
+  - Built with react-easy-crop for intuitive image manipulation
+  - Optimized for various device sizes and orientations
+
+### ⚙️ Personalization Options
+- **Theme Customization**
+  - Component-based UI built with Chakra UI
+  - Dynamic theme switching with smooth transitions
+  - Responsive design system
+
+## Technical Highlights
+- Implemented drag-and-drop functionality with optimized performance
+- Built real-time preview system with efficient state management
+- Designed responsive and accessible UI components
+- Integrated smooth animations and transitions
+- Created intuitive image processing workflow
+
+## System Architecture
+[Insert architecture diagram showing the interaction between components and data flow]
+
+- **Component Structure**
+  - Modular design for maintainability
+  - Clear separation of concerns
+  - Reusable component patterns
+
+- **State Management**
+  - Efficient data flow
+  - Optimized re-rendering
+  - Persistent storage strategy
+
+## Tech Stack
+
+### Core Technologies
+- **React** - Frontend library for building user interfaces
+- **Next.js** - React framework for production-grade applications
+- **Chakra UI** - Component library for building accessible React applications
+
+### Key Libraries
+- **dnd kit** - Modern drag and drop toolkit for React
+- **react-easy-crop** - Image cropping component for React
+- **React Hook Form** - Performant form validation library
+- **Framer Motion** - Animation library for React
+
+## Development
+
+### Prerequisites
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Node.js >= 18.17.0
+npm >= 9.6.0
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
+```bash
+# Clone the repository
+git clone [repository-url]
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+# Install dependencies
+npm install
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Start development server
+npm run dev
+```
