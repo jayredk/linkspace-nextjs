@@ -526,6 +526,7 @@ function SortableSection({
                     />
                   </Tooltip>
                   <Button
+                    boxShadow="0 0 3px #aaa"
                     onClick={handleEditSection}
                     rightIcon={<Icon as={MdEdit} />}
                   >
