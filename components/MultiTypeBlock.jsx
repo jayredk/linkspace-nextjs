@@ -319,7 +319,7 @@ export default function MultiTypeBlock({ section, themeColor, isAnimating }) {
             videoid={getVideoId(section.videoUrl)}
             playlabel={'Play: ' + section.videoDescription}
             style={{
-              backgroundImage: `url(https://i.ytimg.com/vi/${getVideoId(section.videoUrl)}/hqdefault.jpg)`,
+              backgroundImage: `url(https://i.ytimg.com/vi_webp/${getVideoId(section.videoUrl)}/maxresdefault.webp)`,
             }}
           >
             <a href="#" className="lty-playbtn" title="Play Video">
