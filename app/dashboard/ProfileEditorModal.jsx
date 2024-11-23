@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react';
 
+import { DndContext } from '@dnd-kit/core';
+import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
 import UserProfile from '@/components/UserProfile';
 import CropImageModal from './CropImageModal';
 
@@ -9,6 +13,7 @@ import { db } from '@/utils/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 
+import { generateId } from '@/utils/id';
 
 import {
   bgColorsMap,
@@ -106,11 +111,11 @@ export default function ProfileEditorModal({
       }
 
       case 'link': {
-        const linkIndex = parseInt(e.currentTarget.dataset.index);
-
+        const linkId = e.currentTarget.dataset.id
+        
         setTempProfile((prevState) => {
-          const updatedLinks = prevState.links.map((link, index) =>
-            linkIndex === index
+          const updatedLinks = prevState.links.map((link) =>
+            linkId === link.id
               ? {
                 ...link,
                 url: value,
@@ -128,6 +133,7 @@ export default function ProfileEditorModal({
 
       case 'newLink': {
         const newLink = {
+          id: generateId('link'),
           icon: '',
           text: '',
           url: '',
@@ -146,9 +152,11 @@ export default function ProfileEditorModal({
       }
 
       case 'removeLink': {
-        const linkIndex = parseInt(e.currentTarget.dataset.index);
+        const linkId = e.currentTarget.dataset.id
 
         setTempProfile((prevState) => {
+          const linkIndex = prevState.links.findIndex((link) => link.id === linkId)
+
           const updatedLinks = [...prevState.links];
           updatedLinks.splice(linkIndex, 1);
 
@@ -271,6 +279,24 @@ export default function ProfileEditorModal({
     }
   }, [tempCroppedImage]);
 
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    
+    if (!over) return;
+
+    if (active.id !== over.id) {
+      const oldIndex = tempProfile.links.findIndex((link) => link.id === active.id);
+      const newIndex = tempProfile.links.findIndex((link) => link.id === over.id);
+
+      const newLinks = arrayMove(tempProfile.links, oldIndex, newIndex);
+
+      setTempProfile((prevState) => ({
+        ...prevState,
+        links: newLinks
+      }))
+    }
+  }
+
   return (
     <>
       <Modal
@@ -284,7 +310,6 @@ export default function ProfileEditorModal({
         <ModalOverlay />
         <ModalContent
           borderTopRadius="20px"
-          // backgroundColor="gray.200"
           flexDirection="row"
           overflow="hidden"
         >
@@ -292,8 +317,6 @@ export default function ProfileEditorModal({
             borderBottom="1px"
             borderColor="gray.400"
             borderTopRadius="20px"
-            // backgroundColor="#000"
-            // color="#fff"
             display="flex"
             justifyContent="space-between"
             alignItems="center"
@@ -347,41 +370,16 @@ export default function ProfileEditorModal({
                       handleImageChange={handleImageChange}
                     />
                     <Divider my="2rem" borderColor="gray.400" />
-                    <VStack spacing={2}>
-                      {tempProfile.links?.length > 0 &&
-                        tempProfile.links?.map((link, index) => (
-                          <Flex
-                            key={link.icon + index}
-                            w="100%"
-                            alignItems="center"
-                            gap={4}
-                            mb="1rem"
-                          >
-                            <Icon as={MdDragHandle} mr="1rem" fontSize="xl" />
-                            <Icon
-                              as={iconMap[link.icon]}
-                              fontSize="1.25rem"
-                            ></Icon>
-                            <Input
-                              name="link"
-                              data-index={index}
-                              border="1px"
-                              placeholder="https://www.instagram.com/xxx"
-                              onChange={handleTempProfileChange}
-                              value={link.url}
-                            />
-                            <IconButton
-                              name="removeLink"
-                              data-index={index}
-                              onClick={handleTempProfileChange}
-                              colorScheme="red"
-                              fontSize="1.25rem"
-                              aria-label="delete"
-                              icon={<MdOutlineDeleteForever color="inherit" />}
-                            />
-                          </Flex>
-                        ))}
-                    </VStack>
+                    <DndContext onDragEnd={handleDragEnd}>
+                      <SortableContext items={tempProfile.links}>
+                        <VStack spacing={2}>
+                          {tempProfile.links?.length > 0 &&
+                            tempProfile.links?.map((link) => (
+                              <SortableLink key={link.id} link={link} handleTempProfileChange={handleTempProfileChange} />
+                            ))}
+                        </VStack>
+                      </SortableContext>
+                    </DndContext>
                     <Center my="1rem">
                       <Button
                         px="2rem"
@@ -392,108 +390,6 @@ export default function ProfileEditorModal({
                         新增連結
                       </Button>
                     </Center>
-                    {/* <VStack spacing={2}>
-                <Flex
-                  w="100%"
-                  alignItems="center"
-                  gap={4}
-                  mb="1rem"
-                >
-                  <Icon as={MdDragHandle} mr="1rem" fontSize="xl" />
-                  <Icon as={iconMap['instagram']} fontSize="1.25rem"></Icon>
-                  <Input
-                    name="text"
-                    backgroundColor="gray.400"
-                    placeholder="https://www.instagram.com/xxx"
-                  />
-                  <IconButton
-                    colorScheme="red"
-                    fontSize="1.25rem"
-                    aria-label="delete"
-                    icon={<MdOutlineDeleteForever color="inherit" />}
-                  />
-                </Flex>
-                <Flex
-                  w="100%"
-                  alignItems="center"
-                  gap={4}
-                  mb="1rem"
-                >
-                  <Icon as={MdDragHandle} mr="1rem" fontSize="xl" />
-                  <Icon as={iconMap['facebook']} fontSize="1.25rem"></Icon>
-                  <Input
-                    name="text"
-                    backgroundColor="gray.400"
-                    placeholder="https://www.instagram.com/xxx"
-                  />
-                  <IconButton
-                    colorScheme="red"
-                    fontSize="1.25rem"
-                    aria-label="delete"
-                    icon={<MdOutlineDeleteForever color="inherit" />}
-                  />
-                </Flex>
-                <Flex
-                  w="100%"
-                  alignItems="center"
-                  gap={4}
-                  mb="1rem"
-                >
-                  <Icon as={MdDragHandle} mr="1rem" fontSize="xl" />
-                  <Icon as={iconMap['youtube']} fontSize="1.25rem"></Icon>
-                  <Input
-                    name="text"
-                    backgroundColor="gray.400"
-                    placeholder="https://www.instagram.com/xxx"
-                  />
-                  <IconButton
-                    colorScheme="red"
-                    fontSize="1.25rem"
-                    aria-label="delete"
-                    icon={<MdOutlineDeleteForever color="inherit" />}
-                  />
-                </Flex>
-                <Flex
-                  w="100%"
-                  alignItems="center"
-                  gap={4}
-                  mb="1rem"
-                >
-                  <Icon as={MdDragHandle} mr="1rem" fontSize="xl" />
-                  <Icon as={iconMap['tiktok']} fontSize="1.25rem"></Icon>
-                  <Input
-                    name="text"
-                    backgroundColor="gray.400"
-                    placeholder="https://www.instagram.com/xxx"
-                  />
-                  <IconButton
-                    colorScheme="red"
-                    fontSize="1.25rem"
-                    aria-label="delete"
-                    icon={<MdOutlineDeleteForever color="inherit" />}
-                  />
-                </Flex>
-                <Flex
-                  w="100%"
-                  alignItems="center"
-                  gap={4}
-                  mb="1rem"
-                >
-                  <Icon as={MdDragHandle} mr="1rem" fontSize="xl" />
-                  <Icon as={iconMap['threads']} fontSize="1.25rem"></Icon>
-                  <Input
-                    name="text"
-                    backgroundColor="gray.400"
-                    placeholder="https://www.instagram.com/xxx"
-                  />
-                  <IconButton
-                    colorScheme="red"
-                    fontSize="1.25rem"
-                    aria-label="delete"
-                    icon={<MdOutlineDeleteForever color="inherit" />}
-                  />
-                </Flex>
-              </VStack> */}
                   </Box>
                 </TabPanel>
                 <TabPanel>
@@ -602,6 +498,61 @@ export default function ProfileEditorModal({
       />
     </>
   );
+}
+
+function SortableLink({ link, handleTempProfileChange }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: link.id
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    cursor: isDragging ? 'grabbing' : 'default',
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <Flex
+      ref={setNodeRef}
+      style={style}
+      {...attributes} 
+      w="100%"
+      alignItems="center"
+      gap={4}
+      mb="1rem"
+    >
+      <Icon {...listeners} cursor="grab" as={MdDragHandle} mr="1rem" fontSize="xl" />
+      <Icon
+        as={iconMap[link.icon]}
+        fontSize="1.25rem"
+      ></Icon>
+      <Input
+        name="link"
+        data-id={link.id}
+        border="1px"
+        placeholder="https://www.instagram.com/xxx"
+        onChange={handleTempProfileChange}
+        value={link.url}
+      />
+      <IconButton
+        name="removeLink"
+        data-id={link.id}
+        onClick={handleTempProfileChange}
+        colorScheme="red"
+        fontSize="1.25rem"
+        aria-label="delete"
+        icon={<MdOutlineDeleteForever color="inherit" />}
+      />
+    </Flex>
+  )
 }
 
 
