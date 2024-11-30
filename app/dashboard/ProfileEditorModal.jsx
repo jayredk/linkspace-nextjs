@@ -73,11 +73,15 @@ export default function ProfileEditorModal({
   const user = useUser();
   const userId = user?.uid;
 
-  const [tempProfile, setTempProfile] = useState({ ...profile });
+  const [tempProfile, setTempProfile] = useState(() => ({
+    ...profile,
+    links: profile.links?.map(link => ({ ...link }))
+  }));
 
   useEffect(() => {
     setTempProfile({
       ...profile,
+      links: profile.links?.map(link => ({ ...link }))
     });
   }, [profile]);
 
@@ -89,23 +93,15 @@ export default function ProfileEditorModal({
 
 
   const handleTempProfileChange = (e) => {
-    // console.log(e.target.name);
-
     const { name, value } = e.currentTarget;
 
     switch (name) {
-      case 'name': {
+      case 'name':
+      case 'description':
+      case 'themeColor': {
         setTempProfile((prevState) => ({
           ...prevState,
-          name: value,
-        }));
-        break;
-      }
-
-      case 'description': {
-        setTempProfile((prevState) => ({
-          ...prevState,
-          description: value,
+          [name]: value,
         }));
         break;
       }
@@ -134,7 +130,7 @@ export default function ProfileEditorModal({
       case 'newLink': {
         const newLink = {
           id: generateId('link'),
-          icon: '',
+          icon: 'instagram',
           text: '',
           url: '',
         };
@@ -174,16 +170,6 @@ export default function ProfileEditorModal({
             ...prevState,
             bgColor: value,
             textColor: value === 'black' ? 'white' : 'black',
-          };
-        });
-        break;
-      }
-
-      case 'color': {
-        setTempProfile((prevState) => {
-          return {
-            ...prevState,
-            themeColor: value,
           };
         });
         break;
@@ -426,7 +412,7 @@ export default function ProfileEditorModal({
                         return (
                           <Button
                             key={colorName}
-                            name="color"
+                            name="themeColor"
                             bgColor={colorValue}
                             border="1px"
                             borderColor={colorValue}
@@ -570,7 +556,7 @@ function EditAvatar({
           <Image
             maxW="80px"
             mr="1rem"
-            rounded="50%"
+            rounded="xl"
             objectFit="cover"
             src={avatar}
             alt={name}
