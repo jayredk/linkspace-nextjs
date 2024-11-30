@@ -7,7 +7,7 @@ A powerful and intuitive website building tool that allows users to easily integ
 </div>
 
 > **Note on Development History**  
-> This repository is a Next.js implementation of the Linkspace project. The complete development history and commit log can be found in the original React repository at <a href="https://github.com/jayredk/linkspace" target="_blank">here</a>. This version has been reconstructed and optimized using Next.js framework while maintaining all the core functionalities from the original project.
+> This repository is a Next.js implementation of the Linkspace project. The complete development history and commit log can be found in the original React repository at [here](https://github.com/jayredk/linkspace). This version has been reconstructed and optimized using Next.js framework while maintaining all the core functionalities from the original project.
 
 ## Table of Contents
 - [Demo](#demo)
@@ -20,8 +20,8 @@ A powerful and intuitive website building tool that allows users to easily integ
 ## Demo
 
 ### 🌐 Live Demo
-- **Product Website**: <a href="https://linkspace-one.vercel.app/" target="_blank">linkspace-one.vercel.app</a>
-- **Sample Profile Page**: <a href="https://linkspace-one.vercel.app/briantseng" target="_blank">linkspace-one.vercel.app/briantseng</a>
+- **Product Website**: [linkspace-one.vercel.app](https://linkspace-one.vercel.app/)
+- **Sample Profile Page**: [linkspace-one.vercel.app/briantseng](https://linkspace-one.vercel.app/briantseng)
 
 Try creating your own profile at our live demo site!
 
@@ -112,7 +112,9 @@ Try creating your own profile at our live demo site!
 - Created intuitive image processing workflow
 
 ## System Architecture
-[Insert architecture diagram showing the interaction between components and data flow]
+<div>
+  <img src="public/demo/component-structure.png" alt="component-structure" />
+</div>
 
 - **Component Structure**
   - Modular design for maintainability
