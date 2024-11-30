@@ -56,13 +56,12 @@ export default function Signup() {
       const { user } = userCredential;
 
       const slug = user.uid.substring(0, 8);
-      const avatarSeed = crypto.randomUUID().substring(0, 5);
       const username = mail.match(/^([a-zA-Z0-9._%+-]+)@/)[1];
 
       const defaultUserData = {
         slug,
         profile: {
-          avatar: `https://api.dicebear.com/9.x/fun-emoji/svg?seed=${avatarSeed}`,
+          avatar: `https://firebasestorage.googleapis.com/v0/b/linkspace-c64be.appspot.com/o/avatar-images%2Fdefault-avatar.webp?alt=media&token=64b6170e-9a6c-429f-b3f1-38aa1340bd86`,
           email: user.email,
           name: username,
           description: '歡迎來到我的頁面！',
